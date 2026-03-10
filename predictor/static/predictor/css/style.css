@@ -1,3 +1,4 @@
+/* General Reset */
 * {
     margin: 0;
     padding: 0;
@@ -8,6 +9,7 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     background: linear-gradient(to bottom, #dff1ff 0%, #edf7ff 100%);
     color: #1f1f1f;
+    min-height: 100vh;
 }
 
 .container {
@@ -16,6 +18,7 @@ body {
     margin: 0 auto;
 }
 
+/* Header & Nav */
 .topbar {
     background: linear-gradient(to right, #bcdfff, #d5ecff);
     border-bottom: 1px solid #c4dcee;
@@ -33,29 +36,27 @@ body {
     color: #111;
 }
 
-.brand-bold {
-    font-weight: 700;
-}
-
-.brand-light {
-    font-weight: 400;
-}
+.brand-bold { font-weight: 700; }
+.brand-light { font-weight: 400; }
 
 .nav-links a {
     text-decoration: none;
     color: #111;
     margin-left: 24px;
     font-size: 16px;
+    transition: color 0.2s;
 }
 
 .nav-links a:hover {
     color: #0f67c6;
 }
 
+/* Layout Wrapper */
 .page-wrapper {
     padding: 24px 0 40px;
 }
 
+/* Cards */
 .card {
     background: #f7f7f7;
     border-radius: 16px;
@@ -70,6 +71,7 @@ body {
     font-weight: 700;
     color: #111;
     margin-bottom: 10px;
+    text-transform: uppercase;
 }
 
 .card h1 {
@@ -84,10 +86,7 @@ body {
     line-height: 1.5;
 }
 
-.medical-form {
-    margin-top: 8px;
-}
-
+/* Form Styling */
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -140,6 +139,7 @@ body {
     transform: translateY(-1px);
 }
 
+/* Result Box Logic */
 .result-box {
     margin-top: 20px;
     padding: 18px;
@@ -148,27 +148,37 @@ body {
     background: #fff;
 }
 
-.result-box h2 {
-    margin-bottom: 10px;
-    font-size: 20px;
-}
-
 .risk-high {
-    border-left: 6px solid #d9534f;
+    border-left: 8px solid #d9534f;
     background: #fff5f5;
 }
 
 .risk-low {
-    border-left: 6px solid #28a745;
+    border-left: 8px solid #28a745;
     background: #f4fff7;
 }
 
-.disclaimer {
-    margin-top: 10px;
-    font-size: 13px;
-    color: #555;
+.status-label {
+    font-weight: bold;
 }
 
+.text-danger { color: #d9534f; }
+.text-success { color: #28a745; }
+
+.divider {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 10px 0;
+}
+
+.disclaimer {
+    margin-top: 15px;
+    font-size: 13px;
+    color: #666;
+    font-style: italic;
+}
+
+/* Workflow Steps */
 .workflow-grid {
     margin-top: 14px;
     display: grid;
@@ -199,32 +209,16 @@ body {
     flex-shrink: 0;
 }
 
-.workflow-item h3 {
-    margin-bottom: 6px;
-    font-size: 20px;
-}
-
-.workflow-item p {
-    color: #333;
-    line-height: 1.5;
-}
-
+/* Responsive Design */
 @media (max-width: 768px) {
-    .nav-container {
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .nav-links a {
-        margin: 0 10px;
-    }
-
-    .form-grid,
-    .workflow-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .brand {
-        text-align: center;
-    }
+    .nav-container { flex-direction: column; gap: 12px; }
+    .nav-links a { margin: 0 10px; }
+    .form-grid, .workflow-grid { grid-template-columns: 1fr; }
+}
+/* Update your workflow-grid to be more flexible */
+.workflow-grid {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 18px;
 }
