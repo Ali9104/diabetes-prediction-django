@@ -7,58 +7,6 @@
     <title>MediPredict - Dashboard</title>
     <link rel="stylesheet" href="{% static 'predictor/css/style.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #dfe3e8;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-        .stat-value { font-size: 28px; font-weight: 700; display: block; margin-top: 5px; }
-        .stat-label { color: #666; font-size: 14px; text-transform: uppercase; }
-        
-        .charts-wrapper {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-            margin-bottom: 30px;
-        }
-        .chart-card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #dfe3e8;
-        }
-
-        /* Status Colors - Strictly Enforced */
-        .text-danger { color: #d9534f !important; font-weight: bold; }
-        .text-success { color: #28a745 !important; font-weight: bold; }
-
-        .recent-history {
-            margin-top: 20px;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
-        }
-        .record-item {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border-left: 5px solid #dfe3e8;
-        }
-        /* Dynamic border colors based on class */
-        .record-item.diabetic { border-left-color: #d9534f; }
-        .record-item.healthy { border-left-color: #28a745; }
-    </style>
 </head>
 <body>
     <header class="topbar">
@@ -84,7 +32,7 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <span class="stat-label">Total Tests</span>
-                        <span class="stat-value" style="color: #1c67c7;">{{ total }}</span>
+                        <span class="stat-value stat-value-primary">{{ total }}</span>
                     </div>
                     <div class="stat-card">
                         <span class="stat-label">High Risk (Diabetic)</span>
@@ -96,17 +44,17 @@
                     </div>
                     <div class="stat-card">
                         <span class="stat-label">Avg. Patient Age</span>
-                        <span class="stat-value" style="color: #555;">{{ avg_age|floatformat:1 }}</span>
+                        <span class="stat-value stat-value-muted">{{ avg_age|floatformat:1 }}</span>
                     </div>
                 </div>
 
                 <div class="charts-wrapper">
                     <div class="chart-card">
-                        <h3 style="text-align:center;">Risk Distribution</h3>
+                        <h3 class="chart-title">Risk Distribution</h3>
                         <canvas id="riskChart"></canvas>
                     </div>
                     <div class="chart-card">
-                        <h3 style="text-align:center;">Historical Comparison</h3>
+                        <h3 class="chart-title">Historical Comparison</h3>
                         <canvas id="barChart"></canvas>
                     </div>
                 </div>
@@ -114,29 +62,30 @@
                 <div class="recent-history">
                     <h3>Recent Detailed Results</h3>
                     {% for result in results %}
-                    {# Logic Fixed: Using |add:0 to ensure result is treated as an integer #}
                     <div class="record-item {% if result.result_rf|add:0 == 1 %}diabetic{% else %}healthy{% endif %}">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="record-header">
                             <div>
-                                <strong>ID #{{ result.id }}</strong> — 
+                                <strong>ID #{{ result.id }}</strong> —
                                 {% if result.result_rf|add:0 == 1 %}
                                     <span class="text-danger">Diabetic</span>
                                 {% else %}
                                     <span class="text-success">Healthy</span>
                                 {% endif %}
                             </div>
-                            <small style="color: #888;">{{ result.created_at|date:"d M, Y" }}</small>
+                            <small class="record-date">{{ result.created_at|date:"d M, Y" }}</small>
                         </div>
-                        <div style="font-size: 0.85em; color: #666; margin-top: 5px;">
-                            Glucose: <strong>{{ result.glucose }}</strong> | BMI: <strong>{{ result.bmi }}</strong> | Age: <strong>{{ result.age }}</strong>
+                        <div class="record-details">
+                            Glucose: <strong>{{ result.glucose }}</strong> |
+                            BMI: <strong>{{ result.bmi }}</strong> |
+                            Age: <strong>{{ result.age }}</strong>
                         </div>
                     </div>
                     {% empty %}
-                    <p style="color: #888; text-align: center;">No data available.</p>
+                    <p class="empty-state">No data available.</p>
                     {% endfor %}
                     
-                    <div style="text-align: center; margin-top: 15px;">
-                        <a href="{% url 'history' %}" style="text-decoration: none; font-weight: bold; color: #1c67c7;">View Full History →</a>
+                    <div class="center-link">
+                        <a href="{% url 'history' %}" class="history-link">View Full History →</a>
                     </div>
                 </div>
             </section>
@@ -168,7 +117,13 @@
                     backgroundColor: ['#d9534f', '#28a745']
                 }]
             },
-            options: { scales: { y: { beginAtZero: true } } }
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
         });
     </script>
 </body>

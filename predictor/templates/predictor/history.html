@@ -6,64 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MediPredict - History</title>
     <link rel="stylesheet" href="{% static 'predictor/css/style.css' %}">
-    <style>
-        /* Table Design to match Dashboard Cards */
-        .history-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-        .history-table th {
-            background-color: #f8f9fa;
-            color: #666;
-            text-transform: uppercase;
-            font-size: 12px;
-            letter-spacing: 0.5px;
-            padding: 15px;
-            text-align: left;
-            border-bottom: 2px solid #dfe3e8;
-        }
-        .history-table td {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            color: #333;
-        }
-        .history-table tr:hover {
-            background-color: #fcfcfc;
-        }
-
-        /* Status Colors - Strictly applied */
-        .text-danger { color: #d9534f !important; font-weight: bold; }
-        .text-success { color: #28a745 !important; font-weight: bold; }
-
-        /* Pagination Styling */
-        .pagination {
-            margin-top: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            font-size: 14px;
-        }
-        .pagination a {
-            padding: 8px 16px;
-            background-color: #1c67c7;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-        .pagination a:hover {
-            background-color: #1551a0;
-        }
-        .page-info {
-            color: #666;
-        }
-    </style>
 </head>
 <body>
     <header class="topbar">
@@ -85,7 +27,7 @@
         <div class="container">
             <section class="card">
                 <h1>Prediction History</h1>
-                <p style="color: #888; margin-bottom: 20px;">Review past healthcare diagnostic results from the Pima dataset.</p>
+                <p class="history-subtitle">Review past healthcare diagnostic results from the Pima dataset.</p>
 
                 <table class="history-table">
                     <thead>
@@ -98,31 +40,27 @@
                         </tr>
                     </thead>
                     <tbody>
-{% for p in predictions %}
-    <tr>
-        <td>{{ p.created_at|date:"Y-m-d" }}</td>
-        
-        <td>{{ p.age|floatformat:0 }}</td>
-
-        <td>{{ p.glucose }}</td>
-
-        <td>{{ p.bmi }}</td>
-        
-        <td class="{% if p.result_rf|add:0 == 1 %}text-danger{% else %}text-success{% endif %}">
-            {% if p.result_rf|add:0 == 1 %}
-                <strong>Diabetic</strong>
-            {% else %}
-                <strong>Healthy</strong>
-            {% endif %}
-        </td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="5" style="text-align: center; padding: 30px; color: #888;">
-            No history found yet.
-        </td>
-    </tr>
-    {% endfor %}
+                        {% for p in predictions %}
+                        <tr>
+                            <td>{{ p.created_at|date:"Y-m-d" }}</td>
+                            <td>{{ p.age|floatformat:0 }}</td>
+                            <td>{{ p.glucose }}</td>
+                            <td>{{ p.bmi }}</td>
+                            <td class="{% if p.result_rf|add:0 == 1 %}text-danger{% else %}text-success{% endif %}">
+                                {% if p.result_rf|add:0 == 1 %}
+                                    <strong>Diabetic</strong>
+                                {% else %}
+                                    <strong>Healthy</strong>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="empty-history">
+                                No history found yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
 
@@ -132,7 +70,9 @@
                         <a href="?page={{ predictions.previous_page_number }}">« Previous</a>
                     {% endif %}
                     
-                    <span class="page-info">Page <strong>{{ predictions.number }}</strong> of {{ predictions.paginator.num_pages }}</span>
+                    <span class="page-info">
+                        Page <strong>{{ predictions.number }}</strong> of {{ predictions.paginator.num_pages }}
+                    </span>
 
                     {% if predictions.has_next %}
                         <a href="?page={{ predictions.next_page_number }}">Next »</a>
