@@ -418,3 +418,32 @@ body {
         overflow-x: auto;
     }
 }
+/* Align the logout form inside the flex nav */
+.nav-links {
+    display: flex;
+    align-items: center;
+}
+
+/* Reset button to look exactly like your nav links */
+.logout-btn-reset {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 24px; /* Matches your .nav-links a margin */
+    font-family: inherit;
+    font-size: 16px;   /* Matches your .nav-links a font-size */
+    cursor: pointer;
+    transition: color 0.2s;
+    color: #ef4444;    /* Keep it red to stand out, or use #111 for uniform look */
+    font-weight: 500;
+}
+
+.logout-btn-reset:hover {
+    color: #0f67c6;    /* Matches your nav-links a:hover color */
+}
+
+/* Ensure the form doesn't break the flex line */
+.nav-links form {
+    display: flex;
+    align-items: center;
+}

@@ -26,6 +26,9 @@ logreg_model = load_model("LR.joblib")
 rf_model = load_model("RF.joblib")
 mlp_model = load_model("NN.joblib")
 
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 
 def get_prediction(model, features):
     if model is None:
