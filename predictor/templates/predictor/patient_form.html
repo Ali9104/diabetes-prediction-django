@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Patient - MediPredict</title>
+    <link rel="stylesheet" href="{% static 'predictor/css/style.css' %}">
+</head>
+<body>
+    <header class="topbar">
+        <div class="container nav-container">
+            <div class="brand">
+                <span class="brand-bold">MediPredict</span>
+                <span class="brand-light"> - Add Patient</span>
+            </div>
+            <nav class="nav-links">
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'patient_list' %}">Patients</a>
+                <a href="{% url 'history' %}">History</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page-wrapper">
+        <div class="container">
+            <section class="card">
+                <h1>Add New Patient</h1>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="form-grid">
+                        {% for field in form %}
+                        <div class="form-group">
+                            <label>{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <small class="text-danger">{{ field.errors|striptags }}</small>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <button type="submit" class="submit-btn">Save Patient</button>
+                </form>
+            </section>
+        </div>
+    </main>
+</body>
+</html>

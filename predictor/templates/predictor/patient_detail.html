@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediPredict - History</title>
+    <title>{{ patient.first_name }} {{ patient.last_name }} - MediPredict</title>
     <link rel="stylesheet" href="{% static 'predictor/css/style.css' %}">
 </head>
 <body>
@@ -12,7 +12,7 @@
         <div class="container nav-container">
             <div class="brand">
                 <span class="brand-bold">MediPredict</span>
-                <span class="brand-light"> - History</span>
+                <span class="brand-light"> - Patient File</span>
             </div>
             <nav class="nav-links">
                 <a href="{% url 'dashboard' %}">Dashboard</a>
@@ -26,65 +26,72 @@
     <main class="page-wrapper">
         <div class="container">
             <section class="card">
-                <h1>Prediction History</h1>
-                <p class="history-subtitle">All diagnosis records linked to your patients.</p>
+                <h1>{{ patient.first_name }} {{ patient.last_name }}</h1>
+                <p class="section-desc">
+                    Age: <strong>{{ patient.age }}</strong>
+                    {% if patient.gender %}
+                        | Gender: <strong>{{ patient.gender }}</strong>
+                    {% endif %}
+                </p>
+            </section>
+
+            <section class="card">
+                <p class="section-label">NEW DIAGNOSIS</p>
+                <h1>Enter Medical Data</h1>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-grid">
+                        {% for field in form %}
+                        <div class="form-group">
+                            <label>{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <small class="text-danger">{{ field.errors|striptags }}</small>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <button type="submit" class="submit-btn">Run Prediction</button>
+                </form>
+            </section>
+
+            <section class="card">
+                <h1>Patient History</h1>
 
                 <table class="history-table">
                     <thead>
                         <tr>
                             <th>Date</th>
-                            <th>Patient</th>
-                            <th>Age</th>
                             <th>Glucose</th>
                             <th>BMI</th>
+                            <th>Age</th>
                             <th>Result</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for p in predictions %}
                         <tr>
-                            <td>{{ p.created_at|date:"Y-m-d" }}</td>
-                            <td>
-                                {% if p.patient %}
-                                    {{ p.patient.first_name }} {{ p.patient.last_name }}
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
-                            <td>{{ p.age|floatformat:0 }}</td>
+                            <td>{{ p.created_at|date:"Y-m-d H:i" }}</td>
                             <td>{{ p.glucose }}</td>
                             <td>{{ p.bmi }}</td>
+                            <td>{{ p.age }}</td>
                             <td class="{% if p.result_rf|add:0 == 1 %}text-danger{% else %}text-success{% endif %}">
                                 {% if p.result_rf|add:0 == 1 %}
-                                    <strong>Diabetic</strong>
+                                    Diabetic
                                 {% else %}
-                                    <strong>Healthy</strong>
+                                    Healthy
                                 {% endif %}
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="6" class="empty-history">No history found yet.</td>
+                            <td colspan="5" class="empty-history">No diagnosis history for this patient yet.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-
-                {% if predictions.has_other_pages %}
-                <div class="pagination">
-                    {% if predictions.has_previous %}
-                        <a href="?page={{ predictions.previous_page_number }}">« Previous</a>
-                    {% endif %}
-                    
-                    <span class="page-info">
-                        Page <strong>{{ predictions.number }}</strong> of {{ predictions.paginator.num_pages }}
-                    </span>
-
-                    {% if predictions.has_next %}
-                        <a href="?page={{ predictions.next_page_number }}">Next »</a>
-                    {% endif %}
-                </div>
-                {% endif %}
             </section>
         </div>
     </main>

@@ -16,10 +16,10 @@
                 <span class="brand-light"> - Dashboard</span>
             </div>
             <nav class="nav-links">
-                <a href="{% url 'home' %}">Home</a>
                 <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'patient_list' %}">Patients</a>
                 <a href="{% url 'history' %}">History</a>
-                <a href="#">Help</a>
+                <a href="{% url 'logout' %}">Logout</a>
             </nav>
         </div>
     </header>
@@ -31,31 +31,31 @@
                 
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <span class="stat-label">Total Tests</span>
-                        <span class="stat-value stat-value-primary">{{ total }}</span>
+                        <span class="stat-label">Total Patients</span>
+                        <span class="stat-value stat-value-primary">{{ total_patients }}</span>
                     </div>
                     <div class="stat-card">
-                        <span class="stat-label">High Risk (Diabetic)</span>
+                        <span class="stat-label">Total Tests</span>
+                        <span class="stat-value stat-value-primary">{{ total_tests }}</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">High Risk</span>
                         <span class="stat-value text-danger">{{ diabetic }}</span>
                     </div>
                     <div class="stat-card">
-                        <span class="stat-label">Low Risk (Healthy)</span>
+                        <span class="stat-label">Low Risk</span>
                         <span class="stat-value text-success">{{ non_diabetic }}</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-label">Avg. Patient Age</span>
-                        <span class="stat-value stat-value-muted">{{ avg_age|floatformat:1 }}</span>
                     </div>
                 </div>
 
                 <div class="charts-wrapper">
                     <div class="chart-card">
-                        <h3 class="chart-title">Risk Distribution</h3>
+                        <h3 class="chart-title">Average Risk Distribution</h3>
                         <canvas id="riskChart"></canvas>
                     </div>
                     <div class="chart-card">
-                        <h3 class="chart-title">Historical Comparison</h3>
-                        <canvas id="barChart"></canvas>
+                        <h3 class="chart-title">Recent Results</h3>
+                        <p class="section-desc">Average age in recorded tests: <strong>{{ avg_age|floatformat:1 }}</strong></p>
                     </div>
                 </div>
 
@@ -65,7 +65,7 @@
                     <div class="record-item {% if result.result_rf|add:0 == 1 %}diabetic{% else %}healthy{% endif %}">
                         <div class="record-header">
                             <div>
-                                <strong>ID #{{ result.id }}</strong> —
+                                <strong>{{ result.patient.first_name }} {{ result.patient.last_name }}</strong> —
                                 {% if result.result_rf|add:0 == 1 %}
                                     <span class="text-danger">Diabetic</span>
                                 {% else %}
@@ -83,10 +83,6 @@
                     {% empty %}
                     <p class="empty-state">No data available.</p>
                     {% endfor %}
-                    
-                    <div class="center-link">
-                        <a href="{% url 'history' %}" class="history-link">View Full History →</a>
-                    </div>
                 </div>
             </section>
         </div>
@@ -104,25 +100,6 @@
                     data: [dCount, hCount],
                     backgroundColor: ['#d9534f', '#28a745']
                 }]
-            }
-        });
-
-        new Chart(document.getElementById('barChart'), {
-            type: 'bar',
-            data: {
-                labels: ['High Risk', 'Low Risk'],
-                datasets: [{
-                    label: 'Cases',
-                    data: [dCount, hCount],
-                    backgroundColor: ['#d9534f', '#28a745']
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
             }
         });
     </script>
