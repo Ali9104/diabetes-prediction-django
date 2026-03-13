@@ -20,6 +20,7 @@
     <a href="{% url 'dashboard' %}">Dashboard</a>
       <a href="{% url 'patient_list' %}">Patients</a>
     <a href="{% url 'history' %}">History</a>
+    <a href="{% url 'help' %}">Help</a>
     
     <form action="{% url 'logout' %}" method="post" style="display: inline; margin: 0;">
         {% csrf_token %}

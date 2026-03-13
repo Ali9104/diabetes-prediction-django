@@ -13,4 +13,5 @@ path('login/', auth_views.LoginView.as_view(template_name='predictor/login.html'
     path("patients/<int:patient_id>/", views.patient_detail, name="patient_detail"),
 
     path("history/", views.history, name="history"),
+    path("help/", views.help_page, name="help"),
 ]

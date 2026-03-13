@@ -19,13 +19,13 @@
     <a href="{% url 'home' %}">Home</a>
       <a href="{% url 'patient_list' %}">Patients</a>
     <a href="{% url 'history' %}">History</a>
+    <a href="{% url 'help' %}">Help</a>
     
     <form action="{% url 'logout' %}" method="post">
         {% csrf_token %}
         <button type="submit" class="logout-btn-reset">Logout</button>
     </form>
-    
-    <a href="#">Help</a>
+   
 </nav>
         </div>
     </header>

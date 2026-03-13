@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help - MediPredict</title>
+    <link rel="stylesheet" href="{% static 'predictor/css/style.css' %}">
+</head>
+<body>
+    <header class="topbar">
+        <div class="container nav-container">
+            <div class="brand">
+                <span class="brand-bold">MediPredict</span>
+                <span class="brand-light"> - Help</span>
+            </div>
+            <nav class="nav-links">
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'patient_list' %}">Patients</a>
+                <a href="{% url 'history' %}">History</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page-wrapper">
+        <div class="container">
+            <section class="card">
+                <p class="section-label">USER GUIDE</p>
+                <h1>How to Use MediPredict</h1>
+                <p class="section-desc">
+                    This page explains how doctors can use the platform to manage patients,
+                    run diabetes risk predictions, and review previous diagnostic records.
+                </p>
+            </section>
+
+            <section class="card">
+                <h1>Step-by-Step Instructions</h1>
+
+                <div class="help-grid">
+                    <div class="help-item">
+                        <div class="help-step">1</div>
+                        <div>
+                            <h3>Log in</h3>
+                            <p>
+                                Access the application using your doctor account credentials.
+                                After login, you will be redirected to the main dashboard.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="help-item">
+                        <div class="help-step">2</div>
+                        <div>
+                            <h3>Add a New Patient</h3>
+                            <p>
+                                Go to the <strong>Patients</strong> section and click
+                                <strong>Add New Patient</strong>. Fill in the patient's basic information
+                                such as first name, last name, age, and gender.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="help-item">
+                        <div class="help-step">3</div>
+                        <div>
+                            <h3>Open the Patient File</h3>
+                            <p>
+                                After creating the patient, open the patient file to access
+                                the diagnostic form and view previous prediction history.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="help-item">
+                        <div class="help-step">4</div>
+                        <div>
+                            <h3>Enter Medical Data</h3>
+                            <p>
+                                Fill in the medical indicators required by the machine learning model,
+                                including pregnancies, glucose, blood pressure, skin thickness, insulin,
+                                BMI, diabetes pedigree function, and age.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="help-item">
+                        <div class="help-step">5</div>
+                        <div>
+                            <h3>Run the Prediction</h3>
+                            <p>
+                                Click <strong>Run Prediction</strong> to analyze the patient data.
+                                The system uses trained machine learning models to estimate
+                                diabetes risk.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="help-item">
+                        <div class="help-step">6</div>
+                        <div>
+                            <h3>Review the Result</h3>
+                            <p>
+                                The prediction result will be stored in the patient's history.
+                                You can review previous diagnostic entries at any time.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="help-item">
+                        <div class="help-step">7</div>
+                        <div>
+                            <h3>Use the Dashboard</h3>
+                            <p>
+                                The dashboard provides an overview of your patients, total tests,
+                                and risk distribution. It helps monitor the recorded diagnostic activity.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <h1>Important Notes</h1>
+                <ul class="help-list">
+                    <li>Each doctor can only access their own patients and records.</li>
+                    <li>Predictions are stored automatically after each diagnostic submission.</li>
+                    <li>This system is intended for educational purposes and preliminary assessment only.</li>
+                    <li>The generated result does not replace professional medical diagnosis.</li>
+                </ul>
+            </section>
+
+            <section class="card">
+                <h1>Best Practice</h1>
+                <p class="section-desc">
+                    To maintain clear medical records, doctors should create a patient profile first,
+                    then run predictions only from the patient's dedicated file so that all results
+                    are correctly linked to the right history.
+                </p>
+            </section>
+        </div>
+    </main>
+</body>
+</html>

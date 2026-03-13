@@ -405,7 +405,7 @@ body {
     color: #666;
 }
 
-/* Responsive additions */
+
 @media (max-width: 768px) {
     .record-header {
         flex-direction: column;
@@ -418,32 +418,86 @@ body {
         overflow-x: auto;
     }
 }
-/* Align the logout form inside the flex nav */
+
 .nav-links {
     display: flex;
     align-items: center;
 }
 
-/* Reset button to look exactly like your nav links */
+
 .logout-btn-reset {
     background: none;
     border: none;
     padding: 0;
-    margin-left: 24px; /* Matches your .nav-links a margin */
+    margin-left: 24px; 
     font-family: inherit;
-    font-size: 16px;   /* Matches your .nav-links a font-size */
+    font-size: 16px;   
     cursor: pointer;
     transition: color 0.2s;
-    color: #ef4444;    /* Keep it red to stand out, or use #111 for uniform look */
+    color: #ef4444;  
     font-weight: 500;
 }
 
 .logout-btn-reset:hover {
-    color: #0f67c6;    /* Matches your nav-links a:hover color */
+    color: #0f67c6;    
 }
 
-/* Ensure the form doesn't break the flex line */
+
 .nav-links form {
     display: flex;
     align-items: center;
+}
+
+
+.help-grid {
+    display: grid;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.help-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    background: #ffffff;
+    border: 1px solid #dfe3e8;
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.help-step {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #e4f1ff;
+    color: #1c67c7;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 18px;
+}
+
+.help-item h3 {
+    margin-bottom: 6px;
+    color: #111;
+    font-size: 18px;
+}
+
+.help-item p {
+    color: #444;
+    line-height: 1.6;
+}
+
+.help-list {
+    margin-top: 12px;
+    padding-left: 22px;
+    color: #333;
+    line-height: 1.8;
+}
+
+.help-list li {
+    margin-bottom: 6px;
 }
