@@ -1,0 +1,71 @@
+{% extends 'predictor/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Résultats de l'analyse d'Ostéoporose</h3>
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="text-muted">Patient : {{ prediction.patient.first_name }} {{ prediction.patient.last_name }}</h5>
+                    <hr>
+
+                    <div class="my-4">
+                        <h4>Probabilité de risque</h4>
+                        <div class="progress mb-3" style="height: 30px;">
+                            <div class="progress-bar {% if prediction.result == 1 %}bg-danger{% else %}bg-success{% endif %}" 
+                                 role="progressbar" 
+                                 style="width: {{ prediction.probability }}%;" 
+                                 aria-valuenow="{{ prediction.probability }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ prediction.probability }}%
+                            </div>
+                        </div>
+                        
+                        {% if prediction.result == 1 %}
+                            <div class="alert alert-danger">
+                                <strong>Risque Élevé détecté.</strong> Nous vous recommandons de consulter votre médecin pour des examens complémentaires (comme une ostéodensitométrie).
+                            </div>
+                        {% else %}
+                            <div class="alert alert-success">
+                                <strong>Risque Faible.</strong> Continuez à maintenir une alimentation riche en calcium et une activité physique régulière.
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="text-start mt-4">
+                        <h6>Récapitulatif des données saisies :</h6>
+                        <div class="row bg-light p-3 rounded">
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li><strong>Âge :</strong> {{ prediction.age }} ans</li>
+                                    <li><strong>Sexe :</strong> {{ prediction.gender }}</li>
+                                    <li><strong>Antécédents familiaux :</strong> {{ prediction.family_history }}</li>
+                                    <li><strong>Fractures antérieures :</strong> {{ prediction.prior_fractures }}</li>
+                                    <li><strong>Tabagisme :</strong> {{ prediction.smoking }}</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li><strong>Activité physique :</strong> {{ prediction.physical_activity }}</li>
+                                    <li><strong>Apport en Calcium :</strong> {{ prediction.calcium_intake }}</li>
+                                    <li><strong>Apport en Vitamine D :</strong> {{ prediction.vitamin_d_intake }}</li>
+                                    <li><strong>Modèle utilisé :</strong> {{ prediction.model_used|upper }}</li>
+                                    <li><strong>Date :</strong> {{ prediction.created_at|date:"d/m/Y H:i" }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{% url 'take_test' %}" class="btn btn-outline-primary">Refaire un test</a>
+                        <a href="{% url 'patient_dashboard' %}" class="btn btn-secondary">Retour au tableau de bord</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

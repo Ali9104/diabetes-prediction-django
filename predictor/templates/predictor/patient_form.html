@@ -1,0 +1,57 @@
+{% extends 'predictor/base.html' %}
+{% block title %}Nouveau patient - DiabPredict{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-title">Créer un dossier patient</div>
+    <div class="page-subtitle">Un compte patient sera automatiquement créé pour accéder au questionnaire.</div>
+</div>
+
+<div class="card" style="max-width:600px;">
+    <form method="post">
+        {% csrf_token %}
+        <div style="margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);">
+            <div style="font-size:.85rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem;">Informations du patient</div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Prénom</label>
+                    {{ form.first_name }}
+                </div>
+                <div class="form-group">
+                    <label>Nom</label>
+                    {{ form.last_name }}
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Âge</label>
+                    {{ form.age }}
+                </div>
+                <div class="form-group">
+                    <label>Genre</label>
+                    {{ form.gender }}
+                </div>
+            </div>
+        </div>
+        <div>
+            <div style="font-size:.85rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem;">Compte d'accès patient</div>
+            <div class="form-group">
+                <label>Nom d'utilisateur <span style="color:var(--text-muted)">(le patient utilisera ceci pour se connecter)</span></label>
+                {{ form.username }}
+                {% if form.username.errors %}<div style="color:var(--danger);font-size:.8rem;margin-top:4px;">{{ form.username.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+                <label>Mot de passe temporaire</label>
+                {{ form.password }}
+            </div>
+            <div class="form-group">
+                <label>Email (optionnel)</label>
+                {{ form.email }}
+            </div>
+        </div>
+        <div style="display:flex;gap:1rem;margin-top:1.5rem;">
+            <button type="submit" class="btn btn-primary">Créer le dossier</button>
+            <a href="{% url 'patient_list' %}" class="btn btn-outline">Annuler</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

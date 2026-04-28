@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OsteoPredict - Aide</title>
+    <link rel="stylesheet" href="{% static 'predictor/css/style.css' %}">
+</head>
+<body>
+    <header class="topbar">
+        <div class="container nav-container">
+            <div class="brand">
+                <span class="brand-bold">OsteoPredict</span>
+                <span class="brand-light"> - Aide</span>
+            </div>
+            <nav class="nav-links">
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'patient_list' %}">Patients</a>
+                <a href="{% url 'history' %}">Historique</a>
+                <a href="{% url 'logout' %}">Déconnexion</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page-wrapper">
+        <div class="container">
+            <section class="card">
+                <p class="section-label">GUIDE UTILISATEUR</p>
+                <h1>Comment utiliser OsteoPredict</h1>
+                <p class="section-desc">Logiciel d'aide au diagnostic du risque d'ostéoporose.</p>
+            </section>
+
+            <section class="card">
+                <h1>Instructions étape par étape</h1>
+                <div class="help-grid">
+                    <div class="help-item">
+                        <div class="help-step">1</div>
+                        <div>
+                            <h3>Connexion</h3>
+                            <p>Utilisez vos identifiants de médecin pour accéder au tableau de bord.</p>
+                        </div>
+                    </div>
+                    <div class="help-item">
+                        <div class="help-step">2</div>
+                        <div>
+                            <h3>Gestion des Patients</h3>
+                            <p>Créez une fiche pour chaque nouveau patient dans l'onglet "Patients".</p>
+                        </div>
+                    </div>
+                    <div class="help-item">
+                        <div class="help-step">3</div>
+                        <div>
+                            <h3>Analyse IA</h3>
+                            <p>Saisissez les indicateurs (Calcium, Activité physique, etc.) et lancez la prédiction.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <h1>Notes Importantes</h1>
+                <ul class="help-list">
+                    <li>La confidentialité des données patient est respectée.</li>
+                    <li>Les prédictions sont basées sur le modèle CatBoost entraîné sur des données cliniques.</li>
+                    <li>Ce système est un outil d'accompagnement et non un diagnostic définitif.</li>
+                </ul>
+            </section>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,60 @@
+{% extends 'predictor/base.html' %}
+{% block title %}Patients - OsteoPredict{% endblock %}
+{% block content %}
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;">
+    <div>
+        <div class="page-title">Mes patients</div>
+        <div class="page-subtitle">{{ patients|length }} patient(s) enregistré(s)</div>
+    </div>
+    <a href="{% url 'add_patient' %}" class="btn btn-primary">+ Nouveau patient</a>
+</div>
+
+<div class="card">
+    {% if patients %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Âge</th>
+                <th>Genre</th>
+                <th>Compte</th>
+                <th>Tests</th>
+                <th>Dernier résultat</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for p in patients %}
+        {% with latest=p.cdc_predictions.first %}
+        <tr>
+            <td><strong>{{ p.first_name }} {{ p.last_name }}</strong></td>
+            <td>{{ p.age }} ans</td>
+            <td>{{ p.gender|default:"—" }}</td>
+            <td>
+                {% if p.user %}
+                <span style="color:var(--accent-patient);font-size:.8rem;">✓ Actif</span>
+                {% else %}
+                <span style="color:var(--text-muted);font-size:.8rem;">—</span>
+                {% endif %}
+            </td>
+            <td>{{ p.cdc_predictions.count }}</td>
+            <td>
+                {% if latest %}
+                <span class="badge badge-{{ latest.risk_level }}">{{ latest.probability|floatformat:1 }}% · {{ latest.risk_label }}</span>
+                {% else %}<span style="color:var(--text-muted)">—</span>{% endif %}
+            </td>
+            <td><a href="{% url 'patient_detail' p.id %}" class="btn btn-outline" style="padding:5px 14px;font-size:.8rem;">Dossier →</a></td>
+        </tr>
+        {% endwith %}
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div style="text-align:center;padding:3rem;color:var(--text-muted);">
+        <div style="font-size:3rem;margin-bottom:1rem;">🏥</div>
+        <p>Aucun patient enregistré.</p>
+        <a href="{% url 'add_patient' %}" class="btn btn-primary" style="margin-top:1rem;">Ajouter le premier patient</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

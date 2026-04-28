@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OsteoPredict - Analyse</title>
+    <link rel="stylesheet" href="{% static 'predictor/css/style.css' %}">
+</head>
+<body>
+    <header class="topbar">
+        <div class="container nav-container">
+            <div class="brand">
+                <span class="brand-bold">OsteoPredict</span>
+                <span class="brand-light"> - Analyse de Risque</span>
+            </div>
+            <nav class="nav-links">
+                <a href="{% url 'dashboard' %}">Tableau de bord</a>
+                <a href="{% url 'patient_list' %}">Patients</a>
+                <a href="{% url 'history' %}">Historique</a>
+                <a href="{% url 'help' %}">Aide</a>
+                <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-link">Déconnexion</button>
+                </form>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page-wrapper">
+        <div class="container">
+            <section class="card">
+                <p class="section-label">INTERFACE D'ANALYSE</p>
+                <h1>Informations Médicales</h1>
+                <p class="section-desc">Remplissez les champs ci-dessous pour évaluer le risque d'ostéoporose via nos modèles IA.</p>
+
+                <form method="post" class="medical-form">
+                    {% csrf_token %}
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Âge :</label>
+                            <input type="number" name="age" placeholder="ex: 65" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Genre :</label>
+                            <select name="gender" required>
+                                <option value="Male">Homme</option>
+                                <option value="Female">Femme</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Apport en Calcium :</label>
+                            <select name="calcium_intake" required>
+                                <option value="Low">Faible</option>
+                                <option value="Adequate">Adéquat</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Activité Physique :</label>
+                            <select name="physical_activity" required>
+                                <option value="Sedentary">Sédentaire</option>
+                                <option value="Active">Actif</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Consommation d'Alcool :</label>
+                            <select name="alcohol_consumption" required>
+                                <option value="None">Aucune</option>
+                                <option value="Moderate">Modérée</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Antécédents de Fractures :</label>
+                            <select name="prior_fractures" required>
+                                <option value="Yes">Oui</option>
+                                <option value="No">Non</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn">Lancer la Prédiction</button>
+                </form>
+
+                {% if results %}
+                <div class="result-box {% if results.0.result == 1 %}risk-high{% else %}risk-low{% endif %}">
+                    <h2>Résultats de la Prédiction</h2>
+                    {% for result in results %}
+                        <div class="result-item">
+                            <p><strong>Modèle :</strong> {{ result.name }}</p>
+                            <p><strong>Statut :</strong> 
+                                {% if result.result == 1 %}
+                                    <span style="font-weight: bold; color: #d9534f;">Risque d'Ostéoporose Détecté</span>
+                                {% else %}
+                                    <span style="font-weight: bold; color: #28a745;">Condition Normale</span>
+                                {% endif %}
+                            </p>
+                            {% if result.probability is not None %}
+                                <p><strong>Confiance :</strong> {{ result.probability|floatformat:2 }}%</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    <p class="disclaimer">Note : Ce résultat est une estimation IA et ne remplace pas un avis médical.</p>
+                </div>
+                {% endif %}
+            </section>
+        </div>
+    </main>
+</body>
+</html>

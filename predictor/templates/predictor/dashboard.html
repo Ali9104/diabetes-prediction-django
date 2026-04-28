@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediPredict - Dashboard</title>
+    <link rel="stylesheet" href="{% static 'predictor/css/style.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header class="topbar">
+        <div class="container nav-container">
+            <div class="brand">
+                <span class="brand-bold">MediPredict</span>
+                <span class="brand-light"> - Dashboard</span>
+            </div>
+           <nav class="nav-links">
+    <a href="{% url 'home' %}">Home</a>
+      <a href="{% url 'patient_list' %}">Patients</a>
+    <a href="{% url 'history' %}">History</a>
+    <a href="{% url 'help' %}">Help</a>
+    
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="logout-btn-reset">Logout</button>
+    </form>
+   
+</nav>
+        </div>
+    </header>
+
+<main class="page-wrapper">
+    <div class="container">
+        <section class="card">
+            <h1>Analyse Globale - Ostéoporose</h1> <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-label">Total Patients</span>
+                    <span class="stat-value stat-value-primary">{{ total_patients }}</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Total Tests</span>
+                    <span class="stat-value stat-value-primary">{{ total_tests }}</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Risque Élevé</span> <span class="stat-value text-danger">{{ high_risk_count }}</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Risque Faible</span> <span class="stat-value text-success">{{ low_risk_count }}</span>
+                </div>
+            </div>
+
+            <div class="charts-wrapper">
+                <div class="chart-card">
+                    <h3 class="chart-title">Distribution des Risques</h3>
+                    <canvas id="riskChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3 class="chart-title">Âge Moyen</h3>
+                    <p class="section-desc">Moyenne d'âge des patients testés: <strong>{{ avg_age|floatformat:1 }} ans</strong></p>
+                </div>
+            </div>
+
+            <div class="recent-history">
+                <h3>Résultats Détaillés Récents</h3>
+                {% for result in results %}
+                <div class="record-item {% if result.result == 1 %}diabetic{% else %}healthy{% endif %}">
+                    <div class="record-header">
+                        <div>
+                            <strong>{{ result.patient.first_name }} {{ result.patient.last_name }}</strong> —
+                            {% if result.result == 1 %}
+                                <span class="text-danger">Risque Élevé</span>
+                            {% else %}
+                                <span class="text-success">Risque Faible</span>
+                            {% endif %}
+                        </div>
+                        <small class="record-date">{{ result.created_at|date:"d M, Y" }}</small>
+                    </div>
+                    <div class="record-details">
+                        Fractures: <strong>{{ result.prior_fractures }}</strong> |
+                        Activité: <strong>{{ result.physical_activity }}</strong> |
+                        Âge: <strong>{{ result.age }}</strong>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="empty-state">Aucune donnée disponible.</p>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</main>
+
+<script>
+    const dCount = parseInt("{{ high_risk_count|default:0 }}");
+    const hCount = parseInt("{{ low_risk_count|default:0 }}");
+
+    new Chart(document.getElementById('riskChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Risque Élevé', 'Risque Faible'],
+            datasets: [{
+                data: [dCount, hCount],
+                backgroundColor: ['#f87171', '#34d399']
+            }]
+        }
+    });
+</script>
+</body>
+</html>

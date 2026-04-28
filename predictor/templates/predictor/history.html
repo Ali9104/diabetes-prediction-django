@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OsteoPredict - Historique</title>
+    <link rel="stylesheet" href="{% static 'predictor/css/style.css' %}">
+</head>
+<body>
+    <header class="topbar">
+        <div class="container nav-container">
+            <div class="brand">
+                <span class="brand-bold">OsteoPredict</span>
+                <span class="brand-light"> - Historique</span>
+            </div>
+            <nav class="nav-links">
+                <a href="{% url 'home' %}">Accueil</a>
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'patient_list' %}">Patients</a>
+                <a href="{% url 'help' %}">Aide</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page-wrapper">
+        <div class="container">
+            <section class="card">
+                <h1>Historique des Diagnostics</h1>
+                <p class="history-subtitle">Liste de toutes les analyses effectuées pour vos patients.</p>
+
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Patient</th>
+                            <th>Âge</th>
+                            <th>Calcium</th>
+                            <th>Fractures</th>
+                            <th>Résultat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in predictions %}
+                        <tr>
+                            <td>{{ p.created_at|date:"d/m/Y" }}</td>
+                            <td>
+                                {% if p.patient %}
+                                    {{ p.patient.first_name }} {{ p.patient.last_name }}
+                                {% else %} - {% endif %}
+                            </td>
+                            <td>{{ p.age|floatformat:0 }}</td>
+                            <td>{{ p.calcium_intake }}</td>
+                            <td>{{ p.prior_fractures }}</td>
+                            <td class="{% if p.result == 1 %}text-danger{% else %}text-success{% endif %}">
+                                <strong>{% if p.result == 1 %}Risque{% else %}Sain{% endif %}</strong>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="6" class="empty-history">Aucun enregistrement trouvé.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                {% if predictions.has_other_pages %}
+                <div class="pagination">
+                    {% if predictions.has_previous %}<a href="?page={{ predictions.previous_page_number }}">« Précédent</a>{% endif %}
+                    <span class="page-info">Page {{ predictions.number }} sur {{ predictions.paginator.num_pages }}</span>
+                    {% if predictions.has_next %}<a href="?page={{ predictions.next_page_number }}">Suivant »</a>{% endif %}
+                </div>
+                {% endif %}
+            </section>
+        </div>
+    </main>
+</body>
+</html>

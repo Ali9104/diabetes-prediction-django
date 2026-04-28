@@ -1,0 +1,82 @@
+{% extends 'predictor/base.html' %}
+{% block title %}Tableau de bord - OsteoPredict{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-title">Bonjour, Dr. {{ request.user.last_name|default:request.user.username }} 👋</div>
+    <div class="page-subtitle">Aperçu des risques d'ostéoporose et résultats récents.</div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-label">Patients suivis</div>
+        <div class="stat-value" style="color:var(--accent-doctor)">{{ total_patients }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Risques élevés (Ostéoporose)</div> <div class="stat-value" style="color:var(--danger)">{{ high_risk }}</div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-title">Patients récents</div>
+        {% if patients %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Âge</th>
+                    <th>Tests</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for p in patients %}
+            <tr>
+                <td>{{ p.first_name }} {{ p.last_name }}</td>
+                <td>{{ p.age }} ans</td>
+                <td>{{ p.osteo_predictions.count }}</td>
+                <td><a href="{% url 'patient_detail' p.id %}" class="btn btn-outline" style="padding:4px 12px;font-size:.8rem;">Voir</a></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="color:var(--text-muted);font-size:.9rem;">Aucun patient. <a href="{% url 'add_patient' %}" style="color:var(--accent-doctor)">Ajouter un patient</a></p>
+        {% endif %}
+        <div style="margin-top:1rem;">
+            <a href="{% url 'patient_list' %}" class="btn btn-outline">Tous les patients →</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Tests récents (Ostéo)</div>
+        {% if recent_predictions %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Patient</th>
+                    <th>Probabilité</th>
+                    <th>Modèle</th> <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for pred in recent_predictions %}
+            <tr>
+                <td>{{ pred.patient.first_name }} {{ pred.patient.last_name }}</td>
+                <td>
+                    <span class="badge {% if pred.result == 1 %}badge-high{% else %}badge-low{% endif %}">
+                        {{ pred.probability|floatformat:1 }}%
+                    </span>
+                </td>
+                <td style="font-size:0.7rem; color:var(--text-muted)">{{ pred.model_used|upper }}</td>
+                <td style="color:var(--text-muted);font-size:.8rem;">{{ pred.created_at|date:"d/m/Y" }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="color:var(--text-muted);font-size:.9rem;">Aucun test effectué.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

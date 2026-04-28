@@ -1,0 +1,89 @@
+{% extends 'predictor/base.html' %}
+{% block title %}{{ patient.first_name }} {{ patient.last_name }} - OsteoPredict{% endblock %}
+{% block content %}
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;">
+    <div>
+        <div class="page-title">{{ patient.first_name }} {{ patient.last_name }}</div>
+        <div class="page-subtitle">{{ patient.age }} ans · {{ patient.gender|default:"Genre non spécifié" }}</div>
+    </div>
+    <div style="display:flex;gap:.75rem;">
+        {% if patient.user %}
+        <span style="background:var(--accent-patient)22;color:var(--accent-patient);border:1px solid var(--accent-patient)44;border-radius:8px;padding:6px 14px;font-size:.85rem;">
+            ✓ Compte actif — ID: {{ patient.user.username }}
+        </span>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-title">Historique des tests d'ostéoporose</div>
+    {% if predictions %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Probabilité IA</th>
+                <th>Niveau de risque</th>
+                <th>Traitement</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for pred in predictions %}
+        <tr>
+            <td>{{ pred.created_at|date:"d/m/Y à H:i" }}</td>
+            <td>
+                <strong>{{ pred.probability|floatformat:1 }}%</strong>
+            </td>
+            <td><span class="badge badge-{{ pred.risk_level }}">{{ pred.risk_label }}</span></td>
+            <td>
+                {% if pred.treatment %}
+                <span style="color:var(--accent-patient);font-size:.85rem;">✓ Rédigé</span>
+                {% else %}
+                <span style="color:var(--text-muted);font-size:.85rem;">En attente</span>
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'add_treatment' pred.id %}" class="btn btn-outline" style="padding:4px 12px;font-size:.8rem;">
+                    {% if pred.treatment %}Modifier{% else %}+ Traitement{% endif %}
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div style="padding:2rem;text-align:center;color:var(--text-muted);">
+        <p>Ce patient n'a pas encore effectué de test.</p>
+        <p style="font-size:.875rem;margin-top:.5rem;">Demandez-lui de se connecter et de remplir le questionnaire.</p>
+    </div>
+    {% endif %}
+</div>
+
+{% if predictions %}
+<div style="margin-top:1.5rem;">
+    {% with latest=predictions.first %}
+    {% if latest.treatment %}
+    <div class="card">
+        <div class="card-title">Traitement le plus récent</div>
+        <div style="margin-bottom:1rem;">
+            <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:4px;">RECOMMANDATIONS MÉDICALES</div>
+            <p>{{ latest.treatment.notes }}</p>
+        </div>
+        {% if latest.treatment.medications %}
+        <div style="margin-bottom:1rem;">
+            <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:4px;">PRESCRIPTION / MÉDICAMENTS</div>
+            <p>{{ latest.treatment.medications }}</p>
+        </div>
+        {% endif %}
+        {% if latest.treatment.followup_date %}
+        <div style="background:var(--surface2);border-radius:8px;padding:10px 14px;display:inline-block;">
+            📅 Prochain suivi prévu le : <strong>{{ latest.treatment.followup_date|date:"d/m/Y" }}</strong>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% endwith %}
+</div>
+{% endif %}
+{% endblock %}
