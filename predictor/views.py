@@ -112,6 +112,7 @@ def home(request):
 # ==========================================================
 
 @require_role('doctor')
+@login_required
 def doctor_dashboard(request):
     patients = Patient.objects.filter(doctor=request.user)
     recent_predictions = OsteoporosisPrediction.objects.filter(patient__doctor=request.user).order_by('-created_at')[:5]
@@ -123,17 +124,20 @@ def doctor_dashboard(request):
     return render(request, 'predictor/doctor_dashboard.html', context)
 
 @require_role('doctor')
+@login_required
 def patient_list(request):
     patients = Patient.objects.filter(doctor=request.user)
     return render(request, 'predictor/patient_list.html', {'patients': patients})
 
 @require_role('doctor')
+@login_required
 def patient_detail(request, patient_id):
     patient = get_object_or_404(Patient, id=patient_id, doctor=request.user)
     predictions = patient.osteo_predictions.all().order_by('-created_at')
     return render(request, 'predictor/patient_detail.html', {'patient': patient, 'predictions': predictions})
 
 @require_role('doctor')
+@login_required
 def add_patient(request):
     if request.method == 'POST':
         form = PatientForm(request.POST)
@@ -159,6 +163,7 @@ def add_patient(request):
 # ==========================================================
 
 @require_role('patient')
+@login_required
 def patient_dashboard(request):
     patient = get_object_or_404(Patient, user=request.user)
     
@@ -182,6 +187,7 @@ def patient_dashboard(request):
     })
 
 @require_role('patient')
+@login_required
 def take_test(request):
     patient = get_object_or_404(Patient, user=request.user)
     if request.method == 'POST':
@@ -225,11 +231,13 @@ def take_test(request):
     return render(request, 'predictor/take_test.html', {'form': form})
 
 @require_role('patient')
+@login_required
 def test_result(request, prediction_id):
     prediction = get_object_or_404(OsteoporosisPrediction, id=prediction_id)
     return render(request, 'predictor/test_result.html', {'prediction': prediction})
 
 @require_role('doctor')
+@login_required
 def add_treatment(request, prediction_id):
     # On récupère la prédiction d'ostéoporose
     prediction = get_object_or_404(OsteoporosisPrediction, id=prediction_id)
