@@ -183,7 +183,8 @@ def patient_dashboard(request):
         'predictions': all_predictions, 
         'prediction': latest_prediction, 
         'treatment': treatment,
-        'latest': latest_prediction         
+        'latest': latest_prediction     
+            
     })
 
 @require_role('patient')
@@ -233,9 +234,9 @@ def take_test(request):
 @require_role('patient')
 @login_required
 def test_result(request, prediction_id):
-    prediction = get_object_or_404(OsteoporosisPrediction, id=prediction_id)
+    # Charge la prédiction et son traitement associé (s'il existe)
+    prediction = get_object_or_404(OsteoporosisPrediction.objects.select_related('treatment'), id=prediction_id)
     return render(request, 'predictor/test_result.html', {'prediction': prediction})
-
 @require_role('doctor')
 @login_required
 def add_treatment(request, prediction_id):

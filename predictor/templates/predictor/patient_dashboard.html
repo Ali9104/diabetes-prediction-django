@@ -1,5 +1,6 @@
 {% extends 'predictor/base.html' %}
 {% block title %}Mon espace - OsteoPredict{% endblock %}
+
 {% block content %}
 <div class="page-header">
     <div class="page-title">Bonjour, {{ patient.first_name }} 👋</div>
@@ -7,69 +8,68 @@
 </div>
 
 {% if latest %}
-<div style="margin-bottom:2rem;">
-    <div class="card" style="border-color:{% if latest.risk_level == 'high' %}var(--danger){% elif latest.risk_level == 'medium' %}var(--warning){% else %}var(--accent-patient){% endif %}44;">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+<div style="margin-bottom:2.5rem;">
+    <!-- CARTE PRINCIPALE DU DERNIER RÉSULTAT -->
+    <div class="card" style="border-color:{% if latest.risk_level == 'critical' or latest.risk_level == 'high' %}var(--danger){% elif latest.risk_level == 'medium' %}var(--warning){% else %}var(--accent-patient){% endif %}44;">
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
             <div>
-                <div style="font-size:.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;">Votre dernier résultat d'analyse</div>
-                <div style="font-family:var(--font-display);font-size:3rem;color:{% if latest.risk_level == 'high' %}var(--danger){% elif latest.risk_level == 'medium' %}var(--warning){% else %}var(--accent-patient){% endif %};">
+                <div style="font-size:.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:.5rem;">Votre dernier résultat d'analyse</div>
+                <div style="font-family:var(--font-display); font-size:3rem; color:{% if latest.risk_level == 'critical' or latest.risk_level == 'high' %}var(--danger){% elif latest.risk_level == 'medium' %}var(--warning){% else %}var(--accent-patient){% endif %};">
                     {{ latest.probability|floatformat:1 }}%
                 </div>
                 <div style="margin-top:.5rem;">
-                    <span class="badge badge-{{ latest.risk_level }}" style="font-size:.9rem;padding:5px 14px;">{{ latest.risk_label }}</span>
+                    <span class="badge badge-{{ latest.risk_level }}" style="font-size:.9rem; padding:5px 14px;">{{ latest.risk_label }}</span>
                 </div>
-                <div style="color:var(--text-muted);font-size:.85rem;margin-top:.75rem;">Analyse effectuée le {{ latest.created_at|date:"d/m/Y" }}</div>
+                <div style="color:var(--text-muted); font-size:.85rem; margin-top:.75rem;">Analyse effectuée le {{ latest.created_at|date:"d/m/Y" }}</div>
             </div>
             <div style="text-align:right;">
-                <a href="{% url 'test_result' latest.id %}" class="btn btn-outline" style="margin-bottom:.75rem;display:block;">Détails de l'analyse</a>
+                <a href="{% url 'test_result' latest.id %}" class="btn btn-outline" style="margin-bottom:.75rem; display:block;">Détails de l'analyse</a>
                 <a href="{% url 'take_test' %}" class="btn btn-green">Refaire un test</a>
             </div>
         </div>
         
-        {% if latest.treatment %}
-        <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--border);">
-            <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:.5rem;">CONSEILS ET SUIVI MÉDICAL</div>
-            <p style="font-size:.925rem;">{{ latest.treatment.notes|truncatewords:40 }}</p>
-            {% if latest.treatment.followup_date %}
-            <div style="margin-top:.75rem;background:var(--surface2);border-radius:8px;padding:8px 14px;display:inline-block;font-size:.875rem;">
-                📅 Votre prochain rendez-vous : <strong>{{ latest.treatment.followup_date|date:"d/m/Y" }}</strong>
-            </div>
-            {% endif %}
-        </div>
-        {% else %}
-        <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);color:var(--text-muted);font-size:.875rem;">
-            Votre médecin n'a pas encore ajouté de recommandations spécifiques pour ce test.
-        </div>
-        {% endif %}
+    
     </div>
 </div>
 {% else %}
-<div class="card" style="text-align:center;padding:3rem;margin-bottom:2rem;">
-    <div style="font-size:3rem;margin-bottom:1rem;">🦴</div>
-    <div style="font-family:var(--font-display);font-size:1.4rem;margin-bottom:.75rem;">Prêt pour votre première analyse ?</div>
-    <p style="color:var(--text-muted);margin-bottom:1.5rem;">Complétez le questionnaire médical pour évaluer votre santé osseuse instantanément.</p>
-    <a href="{% url 'take_test' %}" class="btn btn-green" style="font-size:1rem;padding:12px 24px;">Lancer l'évaluation</a>
+<div class="card" style="text-align:center; padding:3rem;">
+    <div style="font-size:3rem; margin-bottom:1rem;">🦴</div>
+    <div style="font-family:var(--font-display); font-size:1.4rem; margin-bottom:.75rem;">Bienvenue sur OsteoPredict</div>
+    <p style="color:var(--text-muted); margin-bottom:1.5rem;">Commencez par effectuer votre première évaluation de santé osseuse.</p>
+    <a href="{% url 'take_test' %}" class="btn btn-green">Lancer l'évaluation</a>
 </div>
 {% endif %}
 
+<!-- TABLEAU HISTORIQUE -->
 {% if predictions.count > 1 %}
 <div class="card">
-    <div class="card-title">Historique de mes évaluations</div>
-    <table class="table">
-        <thead>
-            <tr><th>Date</th><th>Probabilité</th><th>Niveau de risque</th><th></th></tr>
-        </thead>
-        <tbody>
-        {% for pred in predictions %}
-        <tr>
-            <td>{{ pred.created_at|date:"d/m/Y" }}</td>
-            <td><strong>{{ pred.probability|floatformat:1 }}%</strong></td>
-            <td><span class="badge badge-{{ pred.risk_level }}">{{ pred.risk_label }}</span></td>
-            <td><a href="{% url 'test_result' pred.id %}" class="btn btn-outline" style="padding:4px 12px;font-size:.8rem;">Consulter</a></td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="card-title" style="margin-bottom:1.5rem;">Historique de mes évaluations</div>
+    <div class="table-responsive">
+        <table class="table" style="width:100%;">
+            <thead>
+                <tr style="text-align:left; color:var(--text-muted); font-size:0.8rem; text-transform:uppercase;">
+                    <th style="padding:12px;">Date</th>
+                    <th style="padding:12px;">Probabilité</th>
+                    <th style="padding:12px;">Risque</th>
+                    <th style="padding:12px; text-align:right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pred in predictions %}
+                <tr style="border-top: 1px solid var(--border);">
+                    <td style="padding:15px;">{{ pred.created_at|date:"d/m/Y" }}</td>
+                    <td style="padding:15px;"><strong>{{ pred.probability|floatformat:1 }}%</strong></td>
+                    <td style="padding:15px;">
+                        <span class="badge badge-{{ pred.risk_level }}">{{ pred.risk_label }}</span>
+                    </td>
+                    <td style="padding:15px; text-align:right;">
+                        <a href="{% url 'test_result' pred.id %}" class="btn btn-outline" style="padding:5px 15px; font-size:0.8rem;">Consulter</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endif %}
 {% endblock %}
