@@ -16,5 +16,4 @@ venv/
 .DS_Store
 Thumbs.db
 
-# ML models
-*.pkl
+
