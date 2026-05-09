@@ -9,7 +9,6 @@
 
 {% if latest %}
 <div style="margin-bottom:2.5rem;">
-    <!-- CARTE PRINCIPALE DU DERNIER RÉSULTAT -->
     <div class="card" style="border-color:{% if latest.risk_level == 'critical' or latest.risk_level == 'high' %}var(--danger){% elif latest.risk_level == 'medium' %}var(--warning){% else %}var(--accent-patient){% endif %}44;">
         <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
             <div>
@@ -27,8 +26,6 @@
                 <a href="{% url 'take_test' %}" class="btn btn-green">Refaire un test</a>
             </div>
         </div>
-        
-    
     </div>
 </div>
 {% else %}
@@ -40,7 +37,6 @@
 </div>
 {% endif %}
 
-<!-- TABLEAU HISTORIQUE -->
 {% if predictions.count > 1 %}
 <div class="card">
     <div class="card-title" style="margin-bottom:1.5rem;">Historique de mes évaluations</div>

@@ -1,59 +1,103 @@
 {% extends 'predictor/base.html' %}
 {% block title %}Questionnaire - OsteoPredict{% endblock %}
+
 {% block extra_css %}
 <style>
-.question-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.25rem 1.5rem;
-    margin-bottom: 1rem;
-}
-.question-text { font-size: .95rem; font-weight: 600; margin-bottom: .75rem; }
-.question-card input, .question-card select {
-    width: 100%; padding: 10px 12px; border-radius: 8px;
-    border: 1px solid var(--border); background: var(--bg); color: var(--text);
-}
-.section-title {
-    font-size: .75rem; font-weight: 700; color: var(--text-muted);
-    text-transform: uppercase; letter-spacing: .08em; margin: 2rem 0 .75rem;
-}
-.help-text { font-size:.82rem;color:var(--text-muted);margin-top:.75rem;line-height:1.5; }
-.errorlist { color: var(--danger); font-size: .85rem; margin: .5rem 0; }
+    .question-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1rem;
+        transition: border-color 0.2s ease;
+    }
+    .question-card:focus-within {
+        border-color: var(--accent-patient);
+    }
+    .question-text { 
+        font-size: .95rem; 
+        font-weight: 600; 
+        margin-bottom: .75rem; 
+        display: block;
+    }
+    .question-card input, .question-card select {
+        width: 100%; 
+        padding: 10px 12px; 
+        border-radius: 8px;
+        border: 1px solid var(--border); 
+        background: var(--bg); 
+        color: var(--text);
+        font-size: 1rem;
+    }
+    .section-title {
+        font-size: .75rem; 
+        font-weight: 700; 
+        color: var(--text-muted);
+        text-transform: uppercase; 
+        letter-spacing: .08em; 
+        margin: 2rem 0 .75rem;
+    }
+    .help-text { 
+        font-size:.82rem;
+        color:var(--text-muted);
+        margin-top:.75rem;
+        line-height:1.5; 
+    }
+    .errorlist { 
+        color: var(--danger); 
+        font-size: .85rem; 
+        margin: 0 0 .5rem 0; 
+        list-style: none;
+        padding: 0;
+    }
 </style>
 {% endblock %}
+
 {% block content %}
 <div class="page-header">
-    <div class="page-title">Questionnaire de dépistage de l'ostéoporose</div>
-    <div class="page-subtitle">Répondez aux questions. Le modèle IA estimera votre risque d'ostéoporose.</div>
+    <div class="page-title">Questionnaire de dépistage</div>
+    <div class="page-subtitle">Veuillez répondre avec précision. Notre IA analysera vos données pour estimer votre risque d'ostéoporose.</div>
 </div>
 
 {% if messages %}
     {% for message in messages %}
-    <div class="card" style="border-color:var(--danger);color:var(--danger);margin-bottom:1rem;">
+    <div class="card" style="border-color:var(--danger); color:var(--danger); margin-bottom:1rem; padding: 1rem;">
         {{ message }}
     </div>
     {% endfor %}
 {% endif %}
 
-<form method="post" id="questionnaire">
+<form method="post" id="questionnaire" style="max-width: 800px;">
     {% csrf_token %}
 
-    <div class="section-title">🦴 Facteurs de risque osseux</div>
+    <div class="section-title">📊 Paramètres et Facteurs de risque</div>
 
     {% for field in form %}
     <div class="question-card">
-        <div class="question-text">{{ field.label }}</div>
-        {{ field.errors }}
+        <label class="question-text" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        
+        {% if field.errors %}
+            <div class="errorlist">{{ field.errors }}</div>
+        {% endif %}
+        
         {{ field }}
+        
+        {% if field.help_text %}
+            <div class="help-text">{{ field.help_text }}</div>
+        {% endif %}
+
         {% if field.name == 'Model' %}
-        <div class="help-text">CatBoost est recommandé, car ton dataset contient surtout des variables catégorielles.</div>
+            <div class="help-text" style="color: var(--accent-patient);">
+                Note : Le modèle <strong>CatBoost</strong> est optimisé pour traiter efficacement les variables de ce questionnaire.
+            </div>
         {% endif %}
     </div>
     {% endfor %}
 
-    <button type="submit" class="btn btn-green" style="font-size:1rem;padding:12px 24px;margin-top:1rem;">
-        Analyser mon risque
-    </button>
+    <div style="margin-top: 2rem; padding-bottom: 3rem;">
+        <button type="submit" class="btn btn-green" style="font-size:1.1rem; padding:14px 32px; width: 100%; sm-width: auto;">
+            Lancer l'analyse du risque
+        </button>
+    </div>
 </form>
 {% endblock %}

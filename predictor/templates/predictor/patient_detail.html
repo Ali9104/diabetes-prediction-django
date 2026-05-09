@@ -1,5 +1,6 @@
 {% extends 'predictor/base.html' %}
 {% block title %}{{ patient.first_name }} {{ patient.last_name }} - OsteoPredict{% endblock %}
+
 {% block content %}
 <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;">
     <div>
@@ -55,7 +56,7 @@
     {% else %}
     <div style="padding:2rem;text-align:center;color:var(--text-muted);">
         <p>Ce patient n'a pas encore effectué de test.</p>
-        <p style="font-size:.875rem;margin-top:.5rem;">Demandez-lui de se connecter et de remplir le questionnaire.</p>
+        <p style="font-size:.875rem;margin-top:.5rem;">Le patient doit se connecter pour remplir le questionnaire d'évaluation.</p>
     </div>
     {% endif %}
 </div>

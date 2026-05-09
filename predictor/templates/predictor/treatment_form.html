@@ -1,36 +1,70 @@
 {% extends 'predictor/base.html' %}
-{% block title %}Traitement - DiabPredict{% endblock %}
+{% block title %}Traitement - OsteoPredict{% endblock %}
+
 {% block content %}
 <div class="page-header">
     <div class="page-title">{% if prediction.treatment %}Modifier le traitement{% else %}Proposer un traitement{% endif %}</div>
-    <div class="page-subtitle">Patient : {{ patient.first_name }} {{ patient.last_name }} · Résultat : {{ prediction.probability|floatformat:1 }}% · {{ prediction.risk_label }}</div>
+    <div class="page-subtitle">Patient : {{ prediction.patient.first_name }} {{ prediction.patient.last_name }} · Résultat : {{ prediction.probability|floatformat:1 }}% · {{ prediction.risk_label }}</div>
 </div>
 
 <div class="card" style="max-width:640px;">
-    <div style="background:var(--surface2);border-radius:10px;padding:1rem;margin-bottom:1.5rem;border-left:3px solid {% if prediction.risk_level == 'high' %}var(--danger){% elif prediction.risk_level == 'medium' %}var(--warning){% else %}var(--accent-patient){% endif %};">
-        <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:4px;">RÉSULTAT DU TEST</div>
-        <strong>{{ prediction.probability|floatformat:1 }}% de risque · {{ prediction.risk_label }}</strong>
-        <div style="font-size:.85rem;color:var(--text-muted);margin-top:2px;">Test effectué le {{ prediction.created_at|date:"d/m/Y à H:i" }}</div>
+    <!-- RÉCAPITULATIF DU RISQUE -->
+    <div style="background:var(--surface2); border-radius:10px; padding:1rem; margin-bottom:1.5rem; border-left:4px solid {% if prediction.risk_level == 'critical' or prediction.risk_level == 'high' %}var(--danger){% elif prediction.risk_level == 'medium' %}var(--warning){% else %}var(--accent-patient){% endif %};">
+        <div style="font-size:.8rem; color:var(--text-muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.05em;">Analyse IA</div>
+        <div style="font-size:1.1rem;">
+            <strong>{{ prediction.probability|floatformat:1 }}% de risque</strong> — 
+            <span class="badge badge-{{ prediction.risk_level }}">{{ prediction.risk_label }}</span>
+        </div>
+        <div style="font-size:.85rem; color:var(--text-muted); margin-top:6px;">Effectué le {{ prediction.created_at|date:"d/m/Y à H:i" }} via {{ prediction.model_used|default:"Modèle standard" }}</div>
     </div>
 
+    <!-- FORMULAIRE DE TRAITEMENT -->
     <form method="post">
         {% csrf_token %}
+        
         <div class="form-group">
-            <label>Recommandations médicales *</label>
+            <label style="font-weight:600; margin-bottom:8px; display:block;">Recommandations médicales *</label>
             {{ form.notes }}
+            {% if form.notes.errors %}<div style="color:var(--danger); font-size:.8rem; margin-top:4px;">{{ form.notes.errors.0 }}</div>{% endif %}
+            <small style="color:var(--text-muted); display:block; margin-top:5px;">Conseils d'hygiène de vie, alimentation ou exercices recommandés.</small>
         </div>
+
         <div class="form-group">
-            <label>Médicaments prescrits</label>
+            <label style="font-weight:600; margin-bottom:8px; display:block;">Médicaments prescrits</label>
             {{ form.medications }}
+            <small style="color:var(--text-muted); display:block; margin-top:5px;">Précisez la posologie si nécessaire (ex: Vitamine D, Calcium).</small>
         </div>
-        <div class="form-group">
-            <label>Date de suivi</label>
+
+        <div class="form-group" style="max-width:300px;">
+            <label style="font-weight:600; margin-bottom:8px; display:block;">Date du prochain suivi</label>
             {{ form.followup_date }}
         </div>
-        <div style="display:flex;gap:1rem;">
-            <button type="submit" class="btn btn-primary">Enregistrer le traitement</button>
-           <a href="{% url 'patient_detail' prediction.patient.id %}" class="btn btn-outline">Annuler</a>
+
+        <div style="display:flex; gap:1rem; margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--border);">
+            <button type="submit" class="btn btn-primary">Enregistrer le dossier</button>
+            <a href="{% url 'patient_detail' prediction.patient.id %}" class="btn btn-outline">Annuler</a>
         </div>
     </form>
 </div>
+
+<style>
+    /* Optimisation locale pour les champs de texte du formulaire */
+    textarea, input[type="date"] {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--text);
+        font-family: inherit;
+        font-size: 0.95rem;
+    }
+    textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+</style>
 {% endblock %}

@@ -7,14 +7,9 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
-
-# Import de tes modèles et formulaires
 from .models import Patient, OsteoporosisPrediction, Treatment, UserProfile
 from .forms import PatientForm, TreatmentForm, OsteoporosisPredictionForm
 
-# ==========================================================
-# CONFIGURATION ET CHARGEMENT DES MODÈLES (Dataset Osteoporosis)
-# ==========================================================
 MODEL_DIR = os.path.join(settings.BASE_DIR, "predictor", "ml_model")
 
 MODEL_FILES = {
@@ -53,7 +48,6 @@ def build_input_dataframe(data):
         "Prior Fractures": data["Prior_Fractures"],
     }])
 
-    # Réplication exacte du Feature Engineering du script d'entraînement
     df["Risk_Age"] = (df["Age"] > 60).astype(int)
     df["Lifestyle_Risk"] = (
         (df["Smoking"] == "Yes").astype(int) +
@@ -69,10 +63,6 @@ def build_input_dataframe(data):
         (df["Medications"] != "Unknown").astype(int)
     )
     return df
-
-# ==========================================================
-# DECORATEURS ET UTILITAIRES DE ROLE
-# ==========================================================
 
 def get_user_role(user):
     try:
@@ -92,10 +82,6 @@ def require_role(role):
         return wrapper
     return decorator
 
-# ==========================================================
-# VUES GENERALES
-# ==========================================================
-
 def logout_view(request):
     logout(request)
     return redirect('login')
@@ -106,10 +92,6 @@ def home(request):
     if role == 'doctor':
         return redirect('doctor_dashboard')
     return redirect('patient_dashboard')
-
-# ==========================================================
-# VUES DOCTEUR
-# ==========================================================
 
 @require_role('doctor')
 @login_required
@@ -158,22 +140,13 @@ def add_patient(request):
         form = PatientForm()
     return render(request, 'predictor/patient_form.html', {'form': form})
 
-# ==========================================================
-# VUES PATIENT ET PREDICTION (Dataset Osteoporosis)
-# ==========================================================
-
 @require_role('patient')
 @login_required
 def patient_dashboard(request):
     patient = get_object_or_404(Patient, user=request.user)
     
-    # 1. On récupère TOUTES les prédictions pour l'historique
     all_predictions = patient.osteo_predictions.all().order_by('-created_at')
-    
-    # 2. On récupère spécifiquement la DERNIÈRE prédiction
     latest_prediction = all_predictions.first()
-    
-    # 3. On récupère le traitement lié à cette dernière prédiction
     treatment = None
     if latest_prediction and hasattr(latest_prediction, 'treatment'):
         treatment = latest_prediction.treatment
@@ -194,18 +167,14 @@ def take_test(request):
     if request.method == 'POST':
         form = OsteoporosisPredictionForm(request.POST)
         if form.is_valid():
-            # 1. Charger le bon modèle
             model_key = form.cleaned_data.get("Model", "cat")
             model_pipeline = load_model(model_key)
             
-            # 2. Préparer les données
             X = build_input_dataframe(form.cleaned_data)
             
-            # 3. Prédire
             proba = model_pipeline.predict_proba(X)[0][1]
             result = 1 if proba >= 0.40 else 0
             
-            # 4. Sauvegarder dans le nouveau modèle OsteoporosisPrediction
             prediction = OsteoporosisPrediction.objects.create(
                 patient=patient,
                 age=int(form.cleaned_data['Age']),
@@ -234,13 +203,11 @@ def take_test(request):
 @require_role('patient')
 @login_required
 def test_result(request, prediction_id):
-    # Charge la prédiction et son traitement associé (s'il existe)
     prediction = get_object_or_404(OsteoporosisPrediction.objects.select_related('treatment'), id=prediction_id)
     return render(request, 'predictor/test_result.html', {'prediction': prediction})
 @require_role('doctor')
 @login_required
 def add_treatment(request, prediction_id):
-    # On récupère la prédiction d'ostéoporose
     prediction = get_object_or_404(OsteoporosisPrediction, id=prediction_id)
     patient = prediction.patient 
 
@@ -249,10 +216,8 @@ def add_treatment(request, prediction_id):
         if form.is_valid():
             treatment = form.save(commit=False)
             
-            # --- LIGNES À VÉRIFIER/AJOUTER ---
             treatment.prediction = prediction
             treatment.patient = patient
-            # Cette ligne récupère le médecin connecté et le lie au traitement
             treatment.doctor = request.user 
             
             treatment.save()

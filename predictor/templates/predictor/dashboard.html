@@ -15,25 +15,24 @@
                 <span class="brand-bold">MediPredict</span>
                 <span class="brand-light"> - Dashboard</span>
             </div>
-           <nav class="nav-links">
-    <a href="{% url 'home' %}">Home</a>
-      <a href="{% url 'patient_list' %}">Patients</a>
-    <a href="{% url 'history' %}">History</a>
-    <a href="{% url 'help' %}">Help</a>
-    
-    <form action="{% url 'logout' %}" method="post">
-        {% csrf_token %}
-        <button type="submit" class="logout-btn-reset">Logout</button>
-    </form>
-   
-</nav>
+            <nav class="nav-links">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'patient_list' %}">Patients</a>
+                <a href="{% url 'history' %}">History</a>
+                <a href="{% url 'help' %}">Help</a>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn-reset">Logout</button>
+                </form>
+            </nav>
         </div>
     </header>
 
 <main class="page-wrapper">
     <div class="container">
         <section class="card">
-            <h1>Analyse Globale - Ostéoporose</h1> <div class="stats-grid">
+            <h1>Analyse Globale - Ostéoporose</h1> 
+            <div class="stats-grid">
                 <div class="stat-card">
                     <span class="stat-label">Total Patients</span>
                     <span class="stat-value stat-value-primary">{{ total_patients }}</span>
@@ -43,10 +42,12 @@
                     <span class="stat-value stat-value-primary">{{ total_tests }}</span>
                 </div>
                 <div class="stat-card">
-                    <span class="stat-label">Risque Élevé</span> <span class="stat-value text-danger">{{ high_risk_count }}</span>
+                    <span class="stat-label">Risque Élevé</span> 
+                    <span class="stat-value text-danger">{{ high_risk_count }}</span>
                 </div>
                 <div class="stat-card">
-                    <span class="stat-label">Risque Faible</span> <span class="stat-value text-success">{{ low_risk_count }}</span>
+                    <span class="stat-label">Risque Faible</span> 
+                    <span class="stat-value text-success">{{ low_risk_count }}</span>
                 </div>
             </div>
 

@@ -40,7 +40,6 @@ class Patient(models.Model):
 class OsteoporosisPrediction(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='osteo_predictions')
     
-    # Données du dataset osteoporosis.csv
     age = models.IntegerField()
     gender = models.CharField(max_length=10)
     hormonal_changes = models.CharField(max_length=50)
@@ -56,7 +55,6 @@ class OsteoporosisPrediction(models.Model):
     medications = models.CharField(max_length=100)
     prior_fractures = models.CharField(max_length=10)
 
-    # Résultats de l'IA
     probability = models.FloatField()
     result = models.IntegerField() # 0 ou 1
     model_used = models.CharField(max_length=50)
@@ -90,7 +88,6 @@ class OsteoporosisPrediction(models.Model):
 
 
 class Treatment(models.Model):
-    # Changement ici : lié à OsteoporosisPrediction au lieu de CDCPrediction
     prediction = models.OneToOneField(OsteoporosisPrediction, on_delete=models.CASCADE, related_name="treatment")
     doctor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="treatments")
     notes = models.TextField()

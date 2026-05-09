@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from .models import Patient, Treatment
 
 class PatientForm(forms.ModelForm):
-    # Also create a Django User account for the patient
     username = forms.CharField(max_length=150, label="Nom d'utilisateur du patient")
     password = forms.CharField(widget=forms.PasswordInput, label="Mot de passe")
     email = forms.EmailField(required=False, label="Email (optionnel)")

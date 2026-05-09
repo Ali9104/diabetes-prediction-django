@@ -1,8 +1,20 @@
 {% extends 'predictor/base.html' %}
+{% block title %}Profil non trouvé - OsteoPredict{% endblock %}
+
 {% block content %}
-<div style="text-align:center;padding:4rem 2rem;">
-    <div style="font-size:3rem;margin-bottom:1rem;">⚠️</div>
-    <div style="font-family:var(--font-display);font-size:1.5rem;margin-bottom:.75rem;">Profil non trouvé</div>
-    <p style="color:var(--text-muted);">Votre compte n'est pas encore lié à un dossier patient. Contactez votre médecin.</p>
+<div style="text-align:center; padding:4rem 2rem; max-width: 500px; margin: 0 auto;">
+    <div style="font-size:3rem; margin-bottom:1rem;">⚠️</div>
+    <div style="font-family:var(--font-display); font-size:1.5rem; margin-bottom:.75rem;">Profil non trouvé</div>
+    <p style="color:var(--text-muted); line-height:1.6;">
+        Votre compte n'est pas encore lié à un dossier patient ou le dossier n'est plus accessible. 
+    </p>
+    <div style="margin-top:2rem; padding:1.5rem; background:var(--surface2); border-radius:12px; border:1px solid var(--border);">
+        <p style="font-size:0.9rem; color:var(--text-main);">
+            Veuillez contacter votre médecin ou l'administration de la plateforme pour activer votre accès aux fonctionnalités de prédiction.
+        </p>
+    </div>
+    <div style="margin-top:2rem;">
+        <a href="{% url 'logout' %}" class="btn btn-outline">Se déconnecter</a>
+    </div>
 </div>
 {% endblock %}

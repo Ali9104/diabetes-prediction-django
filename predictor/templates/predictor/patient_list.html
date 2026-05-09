@@ -1,5 +1,6 @@
 {% extends 'predictor/base.html' %}
 {% block title %}Patients - OsteoPredict{% endblock %}
+
 {% block content %}
 <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;">
     <div>
@@ -41,9 +42,13 @@
             <td>
                 {% if latest %}
                 <span class="badge badge-{{ latest.risk_level }}">{{ latest.probability|floatformat:1 }}% · {{ latest.risk_label }}</span>
-                {% else %}<span style="color:var(--text-muted)">—</span>{% endif %}
+                {% else %}
+                <span style="color:var(--text-muted)">—</span>
+                {% endif %}
             </td>
-            <td><a href="{% url 'patient_detail' p.id %}" class="btn btn-outline" style="padding:5px 14px;font-size:.8rem;">Dossier →</a></td>
+            <td>
+                <a href="{% url 'patient_detail' p.id %}" class="btn btn-outline" style="padding:5px 14px;font-size:.8rem;">Dossier →</a>
+            </td>
         </tr>
         {% endwith %}
         {% endfor %}

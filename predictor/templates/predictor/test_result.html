@@ -1,41 +1,28 @@
 {% extends 'predictor/base.html' %}
+{% block title %}Résultat d'analyse - OsteoPredict{% endblock %}
+
 {% block content %}
-
 <div class="container mt-4">
-
     <div class="row justify-content-center">
         <div class="col-md-9">
 
-            <!-- ================= RESULTAT ================= -->
-            <div class="card mb-4"
-                 style="border-left: 5px solid {% if prediction.result == 1 %}var(--danger){% else %}var(--success){% endif %};">
-
+            <div class="card mb-4" style="border-left: 5px solid {% if prediction.result == 1 %}var(--danger){% else %}var(--success){% endif %};">
                 <div class="p-3">
-
-                    <h5 class="text-muted mb-2"
-                        style="font-size: 0.8rem; letter-spacing: 1px;">
+                    <h5 class="text-muted mb-2" style="font-size: 0.8rem; letter-spacing: 1px;">
                         RÉSULTAT DU TEST
                     </h5>
-
-                    <h2 style="color: {% if prediction.result == 1 %}var(--danger){% else %}var(--success){% endif %};
-                               margin-bottom: 0;">
-                        {{ prediction.probability }}% • {{ prediction.risk_label }}
+                    <h2 style="color: {% if prediction.result == 1 %}var(--danger){% else %}var(--success){% endif %}; margin-bottom: 0;">
+                        {{ prediction.probability|floatformat:1 }}% • {{ prediction.risk_label }}
                     </h2>
-
                     <p class="text-muted small mt-2 mb-0">
-                        Test effectué le {{ prediction.created_at|date:"d/m/Y à H:i" }}
+                        Analyse générée par le modèle {{ prediction.model_used|default:"IA" }} le {{ prediction.created_at|date:"d/m/Y à H:i" }}
                     </p>
-
                 </div>
             </div>
 
-            <!-- ================= RAPPORT DOCTEUR ================= -->
             {% if prediction.treatment %}
-            <div class="card mb-4"
-                 style="background-color: var(--surface2); border: 1px solid var(--border);">
-
+            <div class="card mb-4" style="background-color: var(--surface2); border: 1px solid var(--border);">
                 <div class="p-3">
-
                     <h4 class="mb-4" style="font-family: var(--font-display);">
                         <i class="fas fa-user-md"></i> Rapport du Docteur
                     </h4>
@@ -48,19 +35,17 @@
                     </div>
 
                     <div class="row g-3">
-
                         <div class="col-md-6">
                             <label class="section-label">Médicaments prescrits</label>
                             <div class="info-box">
                                 {{ prediction.treatment.medications|default:"Aucune prescription spécifique" }}
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <label class="section-label">Date de suivi</label>
                             <div class="info-box">
                                 {% if prediction.treatment.followup_date %}
-                                    <span style="color: #60a5fa;">
+                                    <span style="color: var(--accent-patient);">
                                         📅 {{ prediction.treatment.followup_date|date:"d F Y" }}
                                     </span>
                                 {% else %}
@@ -68,47 +53,35 @@
                                 {% endif %}
                             </div>
                         </div>
-
                     </div>
-
                 </div>
             </div>
             {% else %}
-            <div class="card mb-4 text-center"
-                 style="background: var(--surface2); border: 1px dashed var(--border);">
-
+            <div class="card mb-4 text-center" style="background: var(--surface2); border: 1px dashed var(--border);">
                 <div class="p-4 text-muted">
                     Le médecin n'a pas encore rédigé de recommandations pour cette analyse.
                 </div>
-
             </div>
             {% endif %}
 
-            <!-- ================= DONNÉES PATIENT (VERSION MODERNE) ================= -->
             <div class="card mb-4">
                 <div class="p-3">
-
-                    <h6 class="text-muted mb-3"
-                        style="text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px;">
-                        Récapitulatif des données saisies
+                    <h6 class="text-muted mb-3" style="text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px;">
+                        Données transmises au modèle
                     </h6>
-
                     <div class="row g-3">
-
                         <div class="col-6 col-md-3">
                             <div class="data-card">
                                 <span class="label">Âge</span>
                                 <span class="value">{{ prediction.age }} ans</span>
                             </div>
                         </div>
-
                         <div class="col-6 col-md-3">
                             <div class="data-card">
                                 <span class="label">Sexe</span>
                                 <span class="value">{{ prediction.gender }}</span>
                             </div>
                         </div>
-
                         <div class="col-6 col-md-3">
                             <div class="data-card">
                                 <span class="label">Tabac</span>
@@ -117,14 +90,12 @@
                                 </span>
                             </div>
                         </div>
-
                         <div class="col-6 col-md-3">
                             <div class="data-card">
                                 <span class="label">Alcool</span>
                                 <span class="badge">{{ prediction.alcohol_consumption }}</span>
                             </div>
                         </div>
-
                         <div class="col-6 col-md-3">
                             <div class="data-card">
                                 <span class="label">Fractures</span>
@@ -133,34 +104,28 @@
                                 </span>
                             </div>
                         </div>
-
                         <div class="col-6 col-md-3">
                             <div class="data-card">
                                 <span class="label">Activité</span>
                                 <span class="badge">{{ prediction.physical_activity }}</span>
                             </div>
                         </div>
-
                         <div class="col-6 col-md-3">
                             <div class="data-card">
                                 <span class="label">Vitamine D</span>
                                 <span class="badge">{{ prediction.vitamin_d_intake }}</span>
                             </div>
                         </div>
-
                         <div class="col-6 col-md-3">
                             <div class="data-card">
                                 <span class="label">Calcium</span>
                                 <span class="badge">{{ prediction.calcium_intake }}</span>
                             </div>
                         </div>
-
                     </div>
-
                 </div>
             </div>
 
-            <!-- ================= BOUTON ================= -->
             <div class="text-center mt-4">
                 <a href="{% url 'patient_dashboard' %}" class="modern-btn">
                     ← Retour au tableau de bord
@@ -171,10 +136,8 @@
     </div>
 </div>
 
-<!-- ================= STYLE UI MODERNE ================= -->
 <style>
-
-.section-label{
+.section-label {
     color: var(--text-muted);
     font-size: 0.75rem;
     text-transform: uppercase;
@@ -182,8 +145,7 @@
     display: block;
     margin-bottom: 0.5rem;
 }
-
-.content-box{
+.content-box {
     font-size: 1rem;
     line-height: 1.6;
     color: var(--text);
@@ -192,31 +154,21 @@
     border-radius: 8px;
     border: 1px solid var(--border);
 }
-
-.info-box{
+.info-box {
     background: var(--surface);
     border: 1px solid var(--border);
     padding: 1rem;
     border-radius: 8px;
     min-height: 60px;
 }
-
-/* ===== DATA CARDS ===== */
-.data-card{
+.data-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 12px;
     text-align: center;
-    transition: 0.2s ease;
 }
-
-.data-card:hover{
-    transform: translateY(-3px);
-    border-color: #60a5fa;
-}
-
-.label{
+.label {
     display: block;
     font-size: 0.7rem;
     text-transform: uppercase;
@@ -224,15 +176,12 @@
     margin-bottom: 6px;
     letter-spacing: 1px;
 }
-
-.value{
+.value {
     font-size: 1rem;
     font-weight: 600;
     color: var(--text);
 }
-
-/* ===== BADGES ===== */
-.badge{
+.badge {
     display: inline-block;
     padding: 5px 10px;
     border-radius: 999px;
@@ -241,21 +190,17 @@
     color: var(--text);
     border: 1px solid var(--border);
 }
-
-.bad-danger{
+.bad-danger {
     background: rgba(239, 68, 68, 0.15);
     color: #ef4444;
     border-color: rgba(239, 68, 68, 0.3);
 }
-
-.bad-ok{
+.bad-ok {
     background: rgba(34, 197, 94, 0.15);
     color: #22c55e;
     border-color: rgba(34, 197, 94, 0.3);
 }
-
-/* ===== BUTTON ===== */
-.modern-btn{
+.modern-btn {
     display: inline-block;
     padding: 10px 18px;
     border-radius: 10px;
@@ -265,13 +210,10 @@
     text-decoration: none;
     transition: 0.2s;
 }
-
-.modern-btn:hover{
-    background: #60a5fa;
+.modern-btn:hover {
+    background: var(--accent-patient);
     color: white;
-    border-color: #60a5fa;
+    border-color: var(--accent-patient);
 }
-
 </style>
-
 {% endblock %}
