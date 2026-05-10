@@ -27,10 +27,6 @@ def load_model(model_key):
     return joblib.load(path)
 
 def build_input_dataframe(data):
-    """
-    Prépare les données pour le pipeline ML en suivant 
-    le Feature Engineering de train_modelcatboost.py
-    """
     df = pd.DataFrame([{
         "Age": int(data["Age"]),
         "Gender": data["Gender"],

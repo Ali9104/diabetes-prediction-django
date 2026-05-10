@@ -46,7 +46,7 @@
                             <div class="info-box">
                                 {% if prediction.treatment.followup_date %}
                                     <span style="color: var(--accent-patient);">
-                                        📅 {{ prediction.treatment.followup_date|date:"d F Y" }}
+                                         {{ prediction.treatment.followup_date|date:"d F Y" }}
                                     </span>
                                 {% else %}
                                     <span class="text-muted">Non planifiée</span>

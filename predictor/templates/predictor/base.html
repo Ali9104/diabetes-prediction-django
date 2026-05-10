@@ -164,12 +164,12 @@
     <a href="{% url 'home' %}" class="nav-brand">Osteo<span>Predict</span></a>
     <div class="nav-links">
         {% if user.profile.role == 'doctor' %}
-            <span class="nav-badge doctor">👨‍⚕️ Médecin</span>
+            <span class="nav-badge doctor"> Médecin</span>
             <a href="{% url 'doctor_dashboard' %}">Tableau de bord</a>
             <a href="{% url 'patient_list' %}">Patients</a>
             <a href="{% url 'add_patient' %}">+ Nouveau patient</a>
         {% else %}
-            <span class="nav-badge patient">👤 Patient</span>
+            <span class="nav-badge patient"> Patient</span>
             <a href="{% url 'patient_dashboard' %}">Mon espace</a>
             <a href="{% url 'take_test' %}">Faire un test</a>
         {% endif %}
