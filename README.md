@@ -1,13 +1,13 @@
-# diabetes-prediction-django
-🩺 MediPredict – Diabetes Risk Prediction Platform
+# osteopredict-django
+🩺 OsteoPredict – Osteoprosis Risk Prediction Platform
 
-MediPredict is a web-based medical decision support system that predicts the risk of diabetes using machine learning models trained on the Pima Indians Diabetes Dataset.
+OsteoPredict is a web-based medical decision support system that predicts the risk of Osteoprosis using machine learning models trained on the Pima Indians Diabetes Dataset.
 
 The application allows healthcare professionals to:
 
 manage patient records
 
-run diabetes risk predictions
+run osteoprosis risk predictions
 
 store prediction history
 
